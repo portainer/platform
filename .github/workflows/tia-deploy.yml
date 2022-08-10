@@ -1,15 +1,168 @@
-name: CI
+name: "tia-deploy"
+
 on:
   workflow_dispatch:
+    inputs:
+      portainer_image:
+        description: 'Portainer image:'
+        required: true
+        default: 'portainerci/portainer:develop'
+      portainer_agent_image:
+        description: 'Portainer Agent image:'
+        required: true
+        default: 'portainerci/agent:develop'
+      environment_os:
+        description: 'OS or architecture: Specify `lin`(default), `win`, `arm` or `amd`'
+        required: true
+        default: 'lin'
+        type: choice
+        options:
+        - lin
+        - win
+        - arm
+        - amd
+      environment_orchestration:
+        description: 'Orchestration: Specify `swarm`(default), `standalone`, `kubernetes` or `nomad`'
+        required: true
+        default: 'swarm'
+        type: choice
+        options:
+        - swarm
+        - standalone
+        - kubernetes
+        - nomad
+      kubernetes_version:
+        description: 'Kubernetes version: For lin (EKS) specify `1.20.15`, `1.21.12` or `1.22.9` (default). For amd/arm specify `1.22`, `1.23`(default) or `1.24`'
+        required: true
+        default: '1.22.9'
+        type: choice
+        options:
+        - '1.20.15'
+        - '1.21.12'
+        - '1.22.9'
+        - '1.22'
+        - '1.23'
+        - '1.24'
+      environment_duration:
+        description: 'Duration of the environment: Specify `8h` (default), `1d`, `3d`, `5d` or `10d`'
+        required: true
+        default: '8h'
+        type: choice
+        options:
+        - '8h'
+        - '1d'
+        - '3d'
+        - '5d'
+        - '10d'
 
 jobs:
-  build:
+  preparation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Run a one-line script
-        run: echo Hello, world!
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - name: '[Preparation] ENV Initialisation'
+      shell: bash
+      env:
+        TIA_ORCHESTRATION: ${{ github.event.inputs.environment_orchestration }}
+        TIA_ENVIRONMENT_OS: ${{ github.event.inputs.environment_os }}
+        TIA_ENVIRONMENT_DURATION: ${{ github.event.inputs.environment_duration }}
+      run: |
+        if [[ ${TIA_ORCHESTRATION} == "kubernetes" && ${TIA_ENVIRONMENT_OS} == "lin" ]]; then
+          echo "TIA_PREFIX=paas$(echo $(uuidgen) | cut -d - -f 5)" >> $GITHUB_ENV
+        else
+          echo "TIA_PREFIX=iaas$(echo $(uuidgen) | cut -d - -f 5)" >> $GITHUB_ENV
+        fi
+        
+        DURATION_REGEX="^(5d$|10d$)"
+        if [[ ${TIA_ENVIRONMENT_DURATION} =~ $DURATION_REGEX ]]; then
+          echo "TIA_DEPLOY_STAGE_ENVIRONMENT=environment-inf" >> $GITHUB_ENV
+        else
+          echo "TIA_DEPLOY_STAGE_ENVIRONMENT=environment-staging" >> $GITHUB_ENV
+        fi
+    outputs:
+      TIA_PREFIX: ${{ env.TIA_PREFIX }}
+      TIA_DEPLOY_STAGE_ENVIRONMENT: ${{ env.TIA_DEPLOY_STAGE_ENVIRONMENT }}
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ needs.preparation.outputs.TIA_DEPLOY_STAGE_ENVIRONMENT }}
+    needs: [ preparation ]
+    steps:
+    - name: '[Preparation] Checkout the Current Branch'
+      uses: actions/checkout@v3
+    - name: '[Preparation] Install Node version 14'
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - name: '[Preparation] Install Octokit Library'
+      run: npm install @octokit/core @octokit/auth-app
+    - name: '[Preparation] Fetch GitHub App Token'
+      uses: actions/github-script@v6
+      id: portainer-bot
+      env:
+        PORTAINER_BOT_ID: ${{ secrets.PORTAINER_BOT_ID }}
+        PORTAINER_BOT_KEY: ${{ secrets.PORTAINER_BOT_KEY }}
+        PORTAINER_BOT_INSTALLATION_ID: ${{ secrets.PORTAINER_BOT_INSTALLATION_ID }}
+      with:
+        script: |
+          const { Octokit } = require("@octokit/core");
+          const { createAppAuth, createOAuthUserAuth } = require("@octokit/auth-app");
+          const appId = process.env.PORTAINER_BOT_ID;
+          const privateKey = process.env.PORTAINER_BOT_KEY;
+          const installationId = process.env.PORTAINER_BOT_INSTALLATION_ID;
+          
+          const appOctokit = new Octokit({
+            authStrategy: createAppAuth,
+            auth: {
+              appId: appId,
+              privateKey: privateKey,
+            },
+          });
+          
+          const resp = await appOctokit.auth({
+            type: 'installation',
+            installationId,
+          });
+          
+          return resp.token;
+        result-encoding: string
+    - name: '[GH CLI] Execute TIA Deploy'
+      id: tia-deploy
+      env:
+        GH_TOKEN: ${{ steps.portainer-bot.outputs.result }}
+      shell: bash
+      run: |
+        gh workflow run \
+          deploy.yml \
+          --repo https://github.com/portainer/infrastructure \
+          --raw-field portainer_image=${{ github.event.inputs.portainer_image }} \
+          --raw-field portainer_agent_image=${{ github.event.inputs.portainer_agent_image }} \
+          --raw-field environment_os=${{ github.event.inputs.environment_os }} \
+          --raw-field environment_orchestration=${{ github.event.inputs.environment_orchestration }} \
+          --raw-field kubernetes_version=${{ github.event.inputs.kubernetes_version }} \
+          --raw-field feature_flags='' \
+          --raw-field test_automation=false \
+          --raw-field cypress_specs='' \
+          --raw-field environment_prefix=${TIA_PREFIX} \
+          --raw-field environment_owner=${{ github.actor }}
+  destroy:
+    runs-on: ubuntu-latest
+    environment: environment-${{ github.event.inputs.environment_duration }}
+    needs: [ preparation,deploy ]
+    steps:
+    - name: '[Preparation] Checkout the Current Branch'
+      uses: actions/checkout@v3
+    - name: '[Preparation] Generate a PortainerBot Access Token'
+      id: portainer-bot
+      uses: getsentry/action-github-app-token@v1
+      with:
+        app_id: ${{ secrets.PORTAINER_BOT_ID }}
+        private_key: ${{ secrets.PORTAINER_BOT_KEY }}
+    - name: '[GH CLI] Execute TIA Destroy'
+      env:
+        GH_TOKEN: ${{ steps.portainer-bot.outputs.token }}
+        TIA_PREFIX: ${{ needs.preparation.outputs.TIA_PREFIX }}
+      shell: bash
+      run: |
+        gh workflow run \
+          destroy.yml \
+          --repo https://github.com/portainer/infrastructure \
+          --raw-field destroy_id=${TIA_PREFIX}

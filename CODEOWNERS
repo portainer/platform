@@ -1,0 +1,7 @@
+# CODEOWNERS is a tool to encode PR approval rules.
+#
+# When a PR is opened, at least one code owner is required to approve it
+# before being merged.
+# Default owners for everything in the repo
+# Later matches takes precedence
+*                           @portainer/devops
