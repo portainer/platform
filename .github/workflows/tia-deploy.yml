@@ -10,7 +10,7 @@ on:
       portainer_agent_image:
         description: 'Portainer Agent image:'
         required: true
-        default: 'portainerci/agent:develop'
+        default: 'portainer/agent:2.15.0'
       environment_os:
         description: 'OS or architecture: Specify `lin`(default), `win`, `arm` or `amd`'
         required: true
