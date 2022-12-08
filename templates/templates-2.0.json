@@ -3,8 +3,8 @@
   "templates": [
     {
       "type": 3,
-      "title": "Portainer Docker-in-docker",
-      "description": "A Docker in Docker Portainer compose deployment",
+      "title": "Portainer Docker-in-docker Instance",
+      "description": "A Docker-in-Docker Portainer compose instance",
       "categories": ["media"],
       "platform": "linux",
       "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/portainer.png",
@@ -13,6 +13,10 @@
         "stackfile": "templates/stacks/portainer-dind/docker-compose.yml"
       },
       "env": [
+        {
+          "name": "edition",
+          "label": "Portainer Edition (ce OR ee)"
+        },
         {
           "name": "extport",
           "label": "External port"
