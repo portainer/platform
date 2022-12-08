@@ -2,32 +2,6 @@
   "version": "2",
   "templates": [
     {
-      "type": 2,
-      "title": "Portainer Docker-in-Docker",
-      "description": "A Docker-in-Docker Portainer stack deployment",
-      "categories": ["media"],
-      "platform": "linux",
-      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/portainer.png",
-      "repository": {
-        "url": "https://github.com/portainer/platform",
-        "stackfile": "templates/stacks/portainer-dind/docker-stack.yml"
-      },
-      "env": [
-        {
-          "name": "extport",
-          "label": "External port"
-        },
-        {
-          "name": "imagetag",
-          "label": "Image tag"
-        },
-        {
-          "name": "adminpassword",
-          "label": "Admin password"
-        }
-      ]
-    },
-    {
       "type": 3,
       "title": "Portainer Docker-in-docker",
       "description": "A Docker in Docker Portainer compose deployment",
