@@ -4,10 +4,10 @@
     {
       "type": 2,
       "title": "Portainer Docker-in-Docker",
-      "description": "A Docker in Docker Portainer instance",
+      "description": "A Docker-in-Docker Portainer stack deployment",
       "categories": ["media"],
       "platform": "linux",
-      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/liveswitch.png",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/portainer.png",
       "repository": {
         "url": "https://github.com/portainer/platform",
         "stackfile": "templates/stacks/portainer-dind/docker-stack.yml"
@@ -29,11 +29,11 @@
     },
     {
       "type": 3,
-      "title": "Portainer Docker-in-Docker",
-      "description": "A Docker in Docker Portainer instance",
+      "title": "Portainer Docker-in-docker",
+      "description": "A Docker in Docker Portainer compose deployment",
       "categories": ["media"],
       "platform": "linux",
-      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/liveswitch.png",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/portainer.png",
       "repository": {
         "url": "https://github.com/portainer/platform",
         "stackfile": "templates/stacks/portainer-dind/docker-compose.yml"
