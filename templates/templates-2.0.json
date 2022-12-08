@@ -14,15 +14,15 @@
       },
       "env": [
         {
-          "name": "ext-port",
+          "name": "extport",
           "label": "External port"
         },
         {
-          "name": "image-tag",
+          "name": "imagetag",
           "label": "Image tag"
         },
         {
-          "name": "admin-password",
+          "name": "adminpassword",
           "label": "Admin password"
         }
       ]
@@ -40,15 +40,15 @@
       },
       "env": [
         {
-          "name": "ext-port",
+          "name": "extport",
           "label": "External port"
         },
         {
-          "name": "image-tag",
+          "name": "imagetag",
           "label": "Image tag"
         },
         {
-          "name": "admin-password",
+          "name": "adminpassword",
           "label": "Admin password"
         }
       ]

@@ -4,5 +4,5 @@ services:
     image: docker:dind
     privileged: true
     ports: 
-      - {{ext-port}}:9000
-    command: sh -c '(sleep 10 && unset DOCKER_HOST && docker run --name portainer-dind -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:{{image-tag}} --admin-password='$$(docker run --rm httpd:2.4-alpine htpasswd -nbB admin "{{admin-password}}" | cut -d ":" -f 2 | awk "NR==1{print $$1}")')& dockerd-entrypoint.sh'
+      - {{extport}}:9000
+    command: sh -c '(sleep 10 && unset DOCKER_HOST && docker run --name portainer-dind -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:{{imagetag}} --admin-password='$$(docker run --rm httpd:2.4-alpine htpasswd -nbB admin "{{adminpassword}}" | cut -d ":" -f 2 | awk "NR==1{print $$1}")')& dockerd-entrypoint.sh'
