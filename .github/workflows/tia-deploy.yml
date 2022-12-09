@@ -43,6 +43,14 @@ on:
         - '1.22'
         - '1.23'
         - '1.24'
+      apptemplates:
+        description: 'Use Portainer-in-Portainer App Templates: true or false'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+        - 'false'
+        - 'true'
       environment_duration:
         description: 'Duration of the environment: Specify `8h` (default), `1d`, `3d`, `5d` or `10d`'
         required: true
@@ -139,7 +147,8 @@ jobs:
           --raw-field environment_os=${{ github.event.inputs.environment_os }} \
           --raw-field environment_orchestration=${{ github.event.inputs.environment_orchestration }} \
           --raw-field kubernetes_version=${{ github.event.inputs.kubernetes_version }} \
-          --raw-field feature_flags='' \
+          # --raw-field feature_flags='' \
+          --raw-field apptemplates=${{ github.event.inputs.apptemplates }} \
           --raw-field test_automation=false \
           --raw-field cypress_specs='' \
           --raw-field environment_prefix=${TIA_PREFIX} \
