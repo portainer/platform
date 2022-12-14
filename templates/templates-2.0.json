@@ -3,14 +3,44 @@
   "templates": [
     {
       "type": 3,
-      "title": "Portainer Docker-in-docker Instance",
-      "description": "A Docker-in-Docker Portainer compose instance",
+      "title": "Portainer-in-portainer Instance",
+      "description": "Portainer deployed within a dind container",
       "categories": ["media"],
       "platform": "linux",
       "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/portainer.png",
       "repository": {
         "url": "https://github.com/portainer/platform",
         "stackfile": "templates/stacks/portainer-dind/docker-compose.yml"
+      },
+      "env": [
+        {
+          "name": "edition",
+          "label": "Portainer Edition (ce OR ee)"
+        },
+        {
+          "name": "extport",
+          "label": "External port"
+        },
+        {
+          "name": "imagetag",
+          "label": "Image tag"
+        },
+        {
+          "name": "adminpassword",
+          "label": "Admin password"
+        }
+      ]
+    },
+    {
+      "type": 3,
+      "title": "Agent-in-portainer Instance",
+      "description": "Portainer Agent deployed within a dind container",
+      "categories": ["media"],
+      "platform": "linux",
+      "logo": "https://portainer-io-assets.sfo2.digitaloceanspaces.com/logos/portainer.png",
+      "repository": {
+        "url": "https://github.com/portainer/platform",
+        "stackfile": "templates/stacks/agent-dind/docker-compose.yml"
       },
       "env": [
         {
