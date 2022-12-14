@@ -44,20 +44,12 @@
       },
       "env": [
         {
-          "name": "edition",
-          "label": "Portainer Edition (ce OR ee)"
-        },
-        {
           "name": "extport",
           "label": "External port"
         },
         {
           "name": "imagetag",
           "label": "Image tag"
-        },
-        {
-          "name": "adminpassword",
-          "label": "Admin password"
         }
       ]
     }
