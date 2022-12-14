@@ -5,4 +5,4 @@ services:
     privileged: true
     ports:
       - "${extport}:9000"
-    command: sh -c '(sleep 10 && unset DOCKER_HOST && docker run --name portainer_dind -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-${edition}:${imagetag} --admin-password='$$(docker run --rm httpd:2.4-alpine htpasswd -nbB admin "${adminpassword}" | cut -d ":" -f 2 | awk "NR==1{print $$1}")')& dockerd-entrypoint.sh'
+    command: sh -c '(until docker info; do error "Docker not ready yet - retrying in 5 seconds" sleep 5; done && unset DOCKER_HOST && docker run --name portainer_dind -d -p 8000:8000 -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-${edition}:${imagetag} --admin-password='$$(docker run --rm httpd:2.4-alpine htpasswd -nbB admin "${adminpassword}" | cut -d ":" -f 2 | awk "NR==1{print $$1}")')& dockerd-entrypoint.sh'

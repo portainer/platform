@@ -5,4 +5,4 @@ services:
     privileged: true
     ports: 
       - "${extport}:9001"
-    command: sh -c '(sleep 10 && unset DOCKER_HOST && docker run -d -p 9001:9001 --name portainer_agent_dind --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes -v /:/host -e CAP_HOST_MANAGEMENT=1 portainer/agent:${imagetag})& dockerd-entrypoint.sh'
+    command: sh -c '(until docker info; do error "Docker not ready yet - retrying in 5 seconds" sleep 5; done && unset DOCKER_HOST && docker run -d -p 9001:9001 --name portainer_agent_dind --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes -v /:/host -e CAP_HOST_MANAGEMENT=1 portainer/agent:${imagetag})& dockerd-entrypoint.sh'
