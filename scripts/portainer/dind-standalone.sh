@@ -59,52 +59,29 @@ deploy_edge() {
   done
 
   info "Retrieving Portainer Edge ID..."
+  # retrieve_edge_id
   export EDGE_ID="${POD_NAME}-${CONTAINER_SEQUENCE}"
 
   info "Deploying Portainer Edge agent using Edge key ${EDGE_KEY}..."
   echo "Sleeping for ${CONTAINER_SEQUENCE}"
   sleep ${CONTAINER_SEQUENCE}
-
-  if [ "${CONTAINER_SEQUENCE}" -eq 1 ]; then
-    if [ "${EDGE_ASYNC}" -eq 1 ]; then
-      PORTAINER_TAGS=1
-    else
-      PORTAINER_TAGS=2
-    fi
+  
+  CONTAINER_ID=$(docker run -d \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /var/lib/docker/volumes:/var/lib/docker/volumes \
+    -v /:/host \
+    -v portainer_agent_data:/data \
+    --restart always \
+    --pull never \
+    -e EDGE=1 \
+    -e EDGE_ID=${EDGE_ID} \
+    -e EDGE_KEY=${EDGE_KEY} \
+    -e EDGE_INSECURE_POLL=1 \
+    -e EDGE_ASYNC=${EDGE_ASYNC} \
+    -e LOG_LEVEL=DEBUG \
+    ${PORTAINER_AGENT})
     
-    CONTAINER_ID=$(docker run -d \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      -v /var/lib/docker/volumes:/var/lib/docker/volumes \
-      -v /:/host \
-      -v portainer_agent_data:/data \
-      --restart always \
-      --pull never \
-      -e EDGE=1 \
-      -e EDGE_ID=${EDGE_ID} \
-      -e EDGE_KEY=${EDGE_KEY} \
-      -e EDGE_INSECURE_POLL=1 \
-      -e EDGE_ASYNC=${EDGE_ASYNC} \
-      -e PORTAINER_TAGS=${PORTAINER_TAGS} \
-      -e LOG_LEVEL=DEBUG \
-      ${PORTAINER_AGENT})
-  else
-    CONTAINER_ID=$(docker run -d \
-      -v /var/run/docker.sock:/var/run/docker.sock \
-      -v /var/lib/docker/volumes:/var/lib/docker/volumes \
-      -v /:/host \
-      -v portainer_agent_data:/data \
-      --restart always \
-      --pull never \
-      -e EDGE=1 \
-      -e EDGE_ID=${EDGE_ID} \
-      -e EDGE_KEY=${EDGE_KEY} \
-      -e EDGE_INSECURE_POLL=1 \
-      -e EDGE_ASYNC=${EDGE_ASYNC} \
-      -e LOG_LEVEL=DEBUG \
-      ${PORTAINER_AGENT})
-  fi
-
-  docker logs -f ${CONTAINER_ID}
+    docker logs -f ${CONTAINER_ID} || cleanup_edge
 }
 
 deploy_edge "$@"
