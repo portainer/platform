@@ -59,7 +59,7 @@ deploy_edge() {
   done
 
   info "Retrieving Portainer Edge ID..."
-  export EDGE_ID="${POD_NAME}-${CONTAINER_SEQUENCE}"
+  export EDGE_ID="${POD_NAME}-t${CONTAINER_SEQUENCE}"
 
   info "Deploying Portainer Edge agent using Edge key ${EDGE_KEY}..."
   echo "Sleeping for ${CONTAINER_SEQUENCE}"
