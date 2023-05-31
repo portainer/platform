@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{mainName}}-secret"
+  labels:
+    io.portainer.kubernetes.application.name: {{mainName}}
+    io.portainer.kubernetes.application.owner: admin
+    io.portainer.kubernetes.application.stack: {{mainName}}
+stringData:
+  PORTAINER_ADMIN_USERNAME: {{portainerAdminUsername}}
+  PORTAINER_ADMIN_PASSWORD: {{portainerAdminPassword}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{mainName}}-job"
+spec:
+  template:
+    spec:
+      containers:
+      - name: "{{mainName}}-container"
+        image: portainerci/est:2.17.1
+        command: ["/bin/sh",
+          "-c",
+          "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-cleaner.sh && ./portainer-edge-cleaner.sh {{edgeKey}}"
+        ]
+        envFrom:
+        - secretRef:
+            name: "{{mainName}}-secret"
+      restartPolicy: Never
+  backoffLimit: 4
+  ttlSecondsAfterFinished: 30
