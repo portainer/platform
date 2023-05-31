@@ -1,0 +1,285 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{mainName}}-sa"
+  labels:
+    io.portainer.kubernetes.application.name: {{mainName}}
+    io.portainer.kubernetes.application.owner: admin
+    io.portainer.kubernetes.application.stack: {{mainName}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "{{mainName}}-secret"
+  labels:
+    io.portainer.kubernetes.application.name: {{mainName}}
+    io.portainer.kubernetes.application.owner: admin
+    io.portainer.kubernetes.application.stack: {{mainName}}
+stringData:
+  EDGE_KEY: {{edgeKey}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{mainName}}-config"
+  labels:
+    io.portainer.kubernetes.application.name: {{mainName}}
+    io.portainer.kubernetes.application.owner: admin
+    io.portainer.kubernetes.application.stack: {{mainName}}
+data:
+  EDGE_IMAGE: "{{edgeImage}}"
+  EDGE_ASYNC: "{{edgeAsync}}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{mainName}}-deployment"
+  labels:
+    io.portainer.kubernetes.application.name: {{mainName}}
+    io.portainer.kubernetes.application.owner: admin
+    io.portainer.kubernetes.application.stack: {{mainName}}
+spec:
+  replicas: {{edgeReplicas}}
+  selector:
+    matchLabels:
+      io.portainer.kubernetes.application.name: {{mainName}}
+  template:
+    metadata:
+      labels:
+        io.portainer.kubernetes.application.name: {{mainName}}
+    spec:
+      serviceAccountName: "{{mainName}}-sa"
+      securityContext: {}
+      initContainers:
+      - name: dind-init-1
+        image: {{estImage}}
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'cp -R /docker /var/lib/']
+        volumeMounts:
+        - name: docker-graph-storage
+          mountPath: /var/lib/docker
+      containers:
+      - name: dind-agent-1
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "1"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-2
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "2"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-3
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "3"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-4
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "4"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-5
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "5"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-6
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "6"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-7
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "7"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-8
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "8"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-9
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "9"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-agent-10
+        image: {{estImage}}
+        command: ["/bin/sh", "-c", "cd /tmp && wget https://github.com/portainer/platform/archive/main.zip && unzip main.zip && cd platform-main/scripts/edge && chmod +x portainer-edge-venv.sh && ./portainer-edge-venv.sh ${EDGE_IMAGE} ${EDGE_KEY} ${EDGE_ASYNC}"]
+        env: 
+        - name: DOCKER_HOST
+          value: tcp://localhost:2375
+        - name: CONTAINER_SEQUENCE
+          value: "10"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: "{{mainName}}-config"
+        - secretRef:
+            name: "{{mainName}}-secret"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 64Mi
+      - name: dind-daemon
+        image: {{estImage}}
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
+        securityContext:
+          privileged: true
+        imagePullPolicy: IfNotPresent
+        volumeMounts: 
+        - name: docker-graph-storage
+          mountPath: /var/lib/docker
+      volumes: 
+      - name: docker-graph-storage
+        emptyDir: {}
