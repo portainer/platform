@@ -1,0 +1,41 @@
+{
+  "global": {
+    "insecureTls": true,
+    "admin": {
+      "enabled": true
+    },
+    "license": {
+      "enabled": true
+    },
+    "settings": {
+      "enabled": true,
+      "edge": {
+        "enabled": true,
+        "edgePortainerUrl": "https://portainer:9443",
+        "edgeTunnelServerAddress": "portainer:8000",
+        "asyncMode": true,
+        "enableEdgeComputeFeatures": true,
+        "edgeAgentCheckinInterval": 60,
+        "commandInterval": 60,
+        "pingInterval": 60,
+        "snapshotInterval": 60
+      }
+    }
+  },
+  "environments": [
+    {
+      "name": "agent",
+      "environmentType": 2,
+      "url": "tasks.portainer_agent:9001",
+      "tls": true,
+      "tlsSkipVerify": true,
+      "tlsSkipClientVerify": true
+    },
+    {
+      "name": "edge",
+      "environmentType": 4,
+      "publicUrl": "https://portainer:9443",
+      "tunnelServerAddress": "portainer:8000"
+    }
+  ]
+}
