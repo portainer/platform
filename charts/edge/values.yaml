@@ -1,0 +1,54 @@
+# Default values for edge.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: portainerci/agent
+  pullPolicy: IfNotPresent
+  tag: develop
+
+edge:
+  id: 0dac2979-51d2-4b9c-ac48-2f2657a43257
+  key: aHR0cDovL3BvcnRhaW5lcjo5MDAwfHBvcnRhaW5lcjo4MDAwfDkxOmIzOjg5OjY0OjI4OjJjOjY5OmQxOjlhOmYwOjliOmM1OmE0OjQ2OmIzOmMwfDU
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: edge-sa-clusteradmin
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

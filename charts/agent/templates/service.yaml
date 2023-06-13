@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "agent.fullname" . }}
+  labels:
+    {{- include "agent.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.port }}
+      {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort}}
+      {{- end }}
+  selector:
+    {{- include "agent.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ (list (include "agent.fullname" .) "headless" | join "-") }}
+  labels:
+    {{- include "agent.labels" . | nindent 4 }}
+spec:
+  clusterIP: None
+  selector:
+    {{- include "agent.selectorLabels" . | nindent 4 }}
