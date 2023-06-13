@@ -54,6 +54,8 @@ spec:
               secretKeyRef:
                 name: {{ include "edge.fullname" . }}
                 key: edge.key
+          - name: EDGE_INSECURE_POLL
+            value: "1"
           ports:
             - containerPort: 9001
               protocol: TCP
