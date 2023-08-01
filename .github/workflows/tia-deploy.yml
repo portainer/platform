@@ -94,10 +94,8 @@ jobs:
     steps:
     - name: '[Preparation] Checkout the Current Branch'
       uses: actions/checkout@v3
-    - name: '[Preparation] Install Node version 14'
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
+    - name: "[Preparation] set up node.js 18.x"
+      uses: actions/setup-node@v3
     - name: '[Preparation] Install Octokit Library'
       run: npm install @octokit/core @octokit/auth-app
     - name: '[Preparation] Fetch GitHub App Token'
