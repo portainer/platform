@@ -109,7 +109,6 @@ jobs:
         script: |
           const { Octokit } = require("@octokit/core");
           const { createAppAuth, createOAuthUserAuth } = require("@octokit/auth-app");
-          const { fetch } = require(node-fetch);
           const appId = process.env.PORTAINER_BOT_ID;
           const privateKey = process.env.PORTAINER_BOT_KEY;
           const installationId = process.env.PORTAINER_BOT_INSTALLATION_ID;
