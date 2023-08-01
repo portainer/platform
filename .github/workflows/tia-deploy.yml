@@ -97,7 +97,7 @@ jobs:
     - name: "[Preparation] set up node.js 18.x"
       uses: actions/setup-node@v3
     - name: '[Preparation] Install Octokit Library'
-      run: npm install @octokit/core @octokit/auth-app
+      run: npm install @octokit/core @octokit/auth-app node-fetch
     - name: '[Preparation] Fetch GitHub App Token'
       uses: actions/github-script@v6
       id: portainer-bot
@@ -109,7 +109,7 @@ jobs:
         script: |
           const { Octokit } = require("@octokit/core");
           const { createAppAuth, createOAuthUserAuth } = require("@octokit/auth-app");
-          import fetch from "node-fetch";
+          const { fetch } = require(node-fetch);
           const appId = process.env.PORTAINER_BOT_ID;
           const privateKey = process.env.PORTAINER_BOT_KEY;
           const installationId = process.env.PORTAINER_BOT_INSTALLATION_ID;
