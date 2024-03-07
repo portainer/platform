@@ -20,7 +20,7 @@ fullnameOverride: ""
 serviceAccount:
   create: true
   annotations: {}
-  name: edge-async-sa-clusteradmin
+  name: portainer-sa-clusteradmin
 
 podAnnotations: {}
 

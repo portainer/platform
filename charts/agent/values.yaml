@@ -16,7 +16,7 @@ fullnameOverride: ""
 serviceAccount:
   create: true
   annotations: {}
-  name: agent-sa-clusteradmin
+  name: portainer-sa-clusteradmin
 
 podAnnotations: {}
 
