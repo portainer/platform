@@ -5,4 +5,4 @@ metadata:
   labels:
     {{- include "edge.labels" . | nindent 4 }}
 data:
-  edge.id: {{ .Values.edge.id }}
+  edge.id: "{{ .Values.edge.id }}"
