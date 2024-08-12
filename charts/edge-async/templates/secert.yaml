@@ -5,4 +5,4 @@ metadata:
   labels:
     {{- include "edge.labels" . | nindent 4 }}
 data:
-  edge.key: {{ .Values.edge.key | b64enc | quote }}
+  edge.key: "{{ .Values.edge.key | b64enc | quote }}"
