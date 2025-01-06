@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: portainerci/agent
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: develop
 
 imagePullSecrets: []
