@@ -39,6 +39,12 @@ service:
   type: ClusterIP
   port: 80
 
+feature:
+  flags: []
+  # flags: 
+  #  - "--pull-limit-check-disabled"
+  #  - "xxx"
+
 resources:
   limits:
     cpu: 100m
