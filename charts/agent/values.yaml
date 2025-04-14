@@ -35,6 +35,12 @@ service:
   port: 9001
   nodePort: 30775
 
+feature:
+  flags: []
+  # flags: 
+  #  - "--pull-limit-check-disabled"
+  #  - "xxx"
+
 ingress:
   enabled: false
   annotations: {}
