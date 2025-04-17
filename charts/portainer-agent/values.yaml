@@ -1,0 +1,90 @@
+# Default values for portainer-agent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Deployment mode: "agent", "edge", or "edge-async"
+deploymentMode: "agent"
+
+replicaCount: 1
+
+image:
+  repository: portainerci/agent
+  pullPolicy: Always
+  tag: develop
+
+# Edge specific configuration
+edge:
+  enabled: false
+  id: ""
+  key: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: portainer-sa-clusteradmin
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 9001
+  nodePort: 30775
+
+feature:
+  flags: []
+  # flags: 
+  #  - "--pull-limit-check-disabled"
+  #  - "xxx"
+
+# Additional environment variables
+# Example:
+# extraEnv:
+#   - name: CUSTOM_VAR
+#     value: "custom_value"
+#   - name: ANOTHER_VAR
+#     valueFrom:
+#       secretKeyRef:
+#         name: my-secret
+#         key: my-key
+extraEnv: []
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: agent.portainer.io
+      paths:
+      - path: /
+        backend:
+          serviceName: agent-service
+          servicePort: 80
+  tls: []
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {} 
