@@ -11,26 +11,6 @@ metadata:
   {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: {{ include "portainer-agent.fullname" . }}
-  labels:
-    {{- include "portainer-agent.labels" . | nindent 4 }}
-rules:
-  - apiGroups: [""]
-    resources: ["pods", "services", "secrets", "namespaces", "nodes", "configmaps"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["apps"]
-    resources: ["deployments", "daemonsets", "statefulsets", "replicasets"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["networking.k8s.io"]
-    resources: ["ingresses"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: ["storage.k8s.io"]
-    resources: ["storageclasses"]
-    verbs: ["get", "list", "watch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ include "portainer-agent.fullname" . }}
@@ -39,7 +19,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "portainer-agent.fullname" . }}
+  name: cluster-admin
 subjects:
   - kind: ServiceAccount
     name: {{ include "portainer-agent.serviceAccountName" . }}
