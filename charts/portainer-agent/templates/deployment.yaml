@@ -43,7 +43,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
             - name: AGENT_CLUSTER_ADDR
-              value: {{ (list (include "portainer-agent.fullname" .) "headless" | join "-") }}
+              value: {{ include "portainer-agent.fullname" . }}-headless
             - name: AGENT_PORT
               value: "{{ .Values.service.port }}"
             {{- if eq .Values.deploymentMode "edge" }}
