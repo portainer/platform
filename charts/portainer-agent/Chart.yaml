@@ -3,7 +3,7 @@ name: portainer-agent
 description: A Helm chart for Portainer Agent
 type: application
 version: 1.0.0
-appVersion: "2.19.0"
+appVersion: "2.29.0"
 icon: https://portainer.io/images/logo.svg
 keywords:
   - portainer
@@ -15,11 +15,12 @@ sources:
   - https://github.com/portainer/portainer
 maintainers:
   - name: Portainer
-    email: support@portainer.io
+    email: platform-team@portainer.io
+    url: https://www.portainer.io
 annotations:
   category: Infrastructure
   artifacthub.io/changes: |
     - Initial release of the consolidated Portainer Agent chart
   artifacthub.io/images: |
     - name: portainerci/agent
-      image: portainerci/agent:develop 
+      image: portainerci/agent:develop
