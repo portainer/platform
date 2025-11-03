@@ -4,4 +4,4 @@
 # before being merged.
 # Default owners for everything in the repo
 # Later matches takes precedence
-*                           @portainer/engineering/platform
+*                           @portainer/platform
