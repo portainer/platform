@@ -32,6 +32,11 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
+            {{- if .Values.mtls.existingSecret }}
+            - "--mtlscacert=/certs/mtls/mtlsca.crt"
+            - "--mtlscert=/certs/mtls/mtlscert.crt"
+            - "--mtlskey=/certs/mtls/mtlskey.key"
+            {{- end }}
             {{- range .Values.feature.flags }}
             - {{ . | squote }}
             {{- end }}
@@ -54,7 +59,7 @@ spec:
             - name: EDGE_KEY
               value: {{ .Values.edge.key | quote }}
             - name: EDGE_INSECURE_POLL
-              value: "1"
+              value: "{{ if .Values.mtls.existingSecret }}0{{ else }}1{{ end }}"
             {{- else if eq .Values.deploymentMode "edge-async" }}
             - name: EDGE
               value: "1"
@@ -65,17 +70,29 @@ spec:
             - name: EDGE_KEY
               value: {{ .Values.edge.key | quote }}
             - name: EDGE_INSECURE_POLL
-              value: "1"
+              value: "{{ if .Values.mtls.existingSecret }}0{{ else }}1{{ end }}"
             {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          {{- if .Values.mtls.existingSecret }}
+          volumeMounts:
+            - name: mtlscerts
+              mountPath: /certs/mtls
+              readOnly: true
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.mtls.existingSecret }}
+      volumes:
+        - name: mtlscerts
+          secret:
+            secretName: {{ .Values.mtls.existingSecret }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -140,4 +140,9 @@ imagePullSecrets: []
   # - name: regcred
 
 nameOverride: ""
-fullnameOverride: "" 
+fullnameOverride: ""
+
+# mTLS configuration for edge agent communication
+mtls:
+  enable: false
+  existingSecret: ""
