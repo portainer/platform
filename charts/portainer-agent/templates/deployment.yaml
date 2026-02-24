@@ -59,7 +59,7 @@ spec:
             - name: EDGE_KEY
               value: {{ .Values.edge.key | quote }}
             - name: EDGE_INSECURE_POLL
-              value: "{{ if .Values.mtls.existingSecret }}0{{ else }}1{{ end }}"
+              value: "{{ if .Values.edge.insecurePoll }}1{{ else }}0{{ end }}"
             {{- else if eq .Values.deploymentMode "edge-async" }}
             - name: EDGE
               value: "1"
@@ -70,7 +70,7 @@ spec:
             - name: EDGE_KEY
               value: {{ .Values.edge.key | quote }}
             - name: EDGE_INSECURE_POLL
-              value: "{{ if .Values.mtls.existingSecret }}0{{ else }}1{{ end }}"
+              value: "{{ if .Values.edge.insecurePoll }}1{{ else }}0{{ end }}"
             {{- end }}
             {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
