@@ -22,7 +22,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "portainer-agent.fullname" . }}
+      serviceAccountName: {{ include "portainer-agent.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -85,6 +85,11 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            {{- if or (eq .Values.deploymentMode "edge") (eq .Values.deploymentMode "edge-async") }}
+            - name: edge
+              containerPort: 80
+              protocol: TCP
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- if .Values.mtls.existingSecret }}

@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "portainer-agent.fullname" . }}
+  name: {{ include "portainer-agent.serviceAccountName" . }}-crb
   labels:
     {{- include "portainer-agent.labels" . | nindent 4 }}
 roleRef:
@@ -11,6 +11,6 @@ roleRef:
   name: cluster-admin
 subjects:
   - kind: ServiceAccount
-    name: {{ include "portainer-agent.fullname" . }}
+    name: {{ include "portainer-agent.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }} 
