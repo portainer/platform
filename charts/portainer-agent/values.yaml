@@ -33,6 +33,9 @@ edge:
   id: ""
   # Edge key from Portainer
   key: ""
+  # Skip TLS verification when polling the Portainer server
+  # Set to false when using properly signed certificates or mTLS
+  insecurePoll: true
 
 # Service configuration
 service:
@@ -140,4 +143,9 @@ imagePullSecrets: []
   # - name: regcred
 
 nameOverride: ""
-fullnameOverride: "" 
+fullnameOverride: ""
+
+# mTLS configuration for edge agent communication
+mtls:
+  enable: false
+  existingSecret: ""
